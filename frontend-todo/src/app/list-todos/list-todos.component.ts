@@ -29,24 +29,29 @@ export class ListTodosComponent implements OnInit {
   constructor(private todoService: TodoDataService, private router: Router) {}
 
   ngOnInit() {
-    this.updateTodos();
+    this.refreshTodos();
   }
 
-  updateTodos() {
+  refreshTodos() {
     this.todoService.retrieveAllTodos("memo").subscribe((response) => {
       this.todos = response;
     });
+  }
+
+  addTodo() {
+    this.router.navigate(["todos", -1]);
+  }
+
+  updateTodo(id: number) {
+    this.message = `Update of todo ${id} successful!`;
+    this.router.navigate(["todos", id]);
   }
 
   deleteTodo(id: number) {
     this.todoService.deleteTodo("memo", id).subscribe((response) => {
       console.log("response", response);
       this.message = `Delete of todo ${id} successful!`;
-      this.updateTodos();
+      this.refreshTodos();
     });
-  }
-  updateTodo(id: number) {
-    this.message = `Update of todo ${id} successful!`;
-    this.router.navigate(["todos", id]);
   }
 }
