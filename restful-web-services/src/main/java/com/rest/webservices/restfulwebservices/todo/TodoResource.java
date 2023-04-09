@@ -3,7 +3,6 @@ package com.rest.webservices.restfulwebservices.todo;
 import java.net.URI;
 import java.util.List;
 
-import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +22,7 @@ public class TodoResource {
 
   @Autowired
   public TodoHardCodedService todoService;
+  private ResponseEntity<Void> returnObj;
 
   @GetMapping("/users/{username}/todos")
   public List<Todo> getAllTodos(@PathVariable String username) {
@@ -49,7 +49,7 @@ public class TodoResource {
   @PutMapping("/users/{username}/todos/{id}")
   public ResponseEntity<Todo> updateTodo(@PathVariable String username, @PathVariable long id, @RequestBody Todo todo) {
     Todo updatedTodo = todoService.save(todo);
-    return new ResponseEntity<Todo>(todo, HttpStatus.OK);
+    return new ResponseEntity<Todo>(updatedTodo, HttpStatus.OK);
   }
 
   @PostMapping("/users/{username}/todos")
@@ -57,6 +57,7 @@ public class TodoResource {
     Todo newTodo = todoService.save(todo);
 
     URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(newTodo.getId()).toUri();
-    return ResponseEntity.created(uri).build();
+    returnObj = ResponseEntity.created(uri).build();
+    return returnObj;
   }
 }
